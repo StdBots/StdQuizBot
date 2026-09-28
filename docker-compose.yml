@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  stdquizbot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stdquizbot
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/stdquizbot
+      - DB_NAME=stdquizbot
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - bot-network
+
+  mongodb:
+    image: mongo:7.0
+    container_name: stdquiz_mongodb
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+networks:
+  bot-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
+    driver: local

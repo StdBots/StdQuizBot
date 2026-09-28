@@ -1,0 +1,16 @@
+[Unit]
+Description=StdQuizBot - Enterprise Telegram Quiz & Tournament Bot Daemon
+After=network.target mongodb.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/stdbots/StdQuizBot
+ExecStart=/opt/stdbots/StdQuizBot/bin/bot
+Restart=always
+RestartSec=5
+EnvironmentFile=/opt/stdbots/StdQuizBot/.env
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
